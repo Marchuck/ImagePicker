@@ -7,9 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
-import com.github.dhaval2404.imagepicker.constant.ImageProvider.BOTH
-import com.github.dhaval2404.imagepicker.constant.ImageProvider.CAMERA
-import com.github.dhaval2404.imagepicker.constant.ImageProvider.GALLERY
+import com.github.dhaval2404.imagepicker.constant.ImageProvider.*
 import com.github.dhaval2404.imagepicker.listener.ResultListener
 import com.github.dhaval2404.imagepicker.util.DialogHelper
 import com.github.florent37.inlineactivityresult.kotlin.startForResult
@@ -29,6 +27,7 @@ open class ImagePicker {
         const val REQUEST_CODE = 2404
         const val RESULT_ERROR = 64
 
+        internal const val EXTRA_RESTRICTED_MIME_TYPES = "extra.image_mimetypes"
         internal const val EXTRA_IMAGE_PROVIDER = "extra.image_provider"
         internal const val EXTRA_IMAGE_MAX_SIZE = "extra.image_max_size"
         internal const val EXTRA_CROP = "extra.crop"
@@ -114,6 +113,14 @@ open class ImagePicker {
          */
         private var maxSize: Long = 0
 
+        /*
+         * limit to mime types, by default, all mime types are supported
+         */
+        private var restrictToMimeTypes = arrayListOf<String>()
+
+        /*
+         * specify callback for the client informing which image provider user has picked
+         */
         private var imageProviderInterceptor: ((ImageProvider) -> Unit)? = null
 
         /**
@@ -202,6 +209,19 @@ open class ImagePicker {
             return this
         }
 
+        fun restrictToMimeTypes(vararg mimeType: String): Builder {
+            val list = arrayListOf<String>()
+            for (type in mimeType) {
+                list.add(type)
+            }
+            return restrictToMimeTypes(list)
+        }
+
+        private fun restrictToMimeTypes(restrictToMimeTypes: ArrayList<String>): Builder {
+            this.restrictToMimeTypes = restrictToMimeTypes
+            return this
+        }
+
         /**
          * Start Image Picker Activity
          */
@@ -272,6 +292,8 @@ open class ImagePicker {
         private fun getBundle(): Bundle {
             val bundle = Bundle()
             bundle.putSerializable(EXTRA_IMAGE_PROVIDER, imageProvider)
+
+            bundle.putStringArrayList(EXTRA_RESTRICTED_MIME_TYPES, restrictToMimeTypes)
 
             bundle.putBoolean(EXTRA_CROP, crop)
             bundle.putFloat(EXTRA_CROP_X, cropX)

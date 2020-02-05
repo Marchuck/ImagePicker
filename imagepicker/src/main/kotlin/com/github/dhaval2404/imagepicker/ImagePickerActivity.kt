@@ -93,7 +93,7 @@ class ImagePickerActivity : AppCompatActivity() {
         // Create Gallery/Camera Provider
         when (provider) {
             ImageProvider.GALLERY -> {
-                mGalleryProvider = GalleryProvider(this)
+                mGalleryProvider = GalleryProvider(this, getRestrictedMimeTypes())
                 // Pick Gallery Image
                 savedInstanceState ?: mGalleryProvider?.startIntent()
             }
@@ -109,6 +109,12 @@ class ImagePickerActivity : AppCompatActivity() {
                 setError(getString(R.string.error_task_cancelled))
             }
         }
+    }
+
+    private fun getRestrictedMimeTypes(): ArrayList<String> {
+        val key = ImagePicker.EXTRA_RESTRICTED_MIME_TYPES
+        val restrictedMimeTypes = intent?.getStringArrayListExtra(key) as? ArrayList<String>
+        return restrictedMimeTypes ?: ArrayList()
     }
 
     /**

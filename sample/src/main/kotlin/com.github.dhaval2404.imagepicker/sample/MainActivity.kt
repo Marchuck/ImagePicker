@@ -13,11 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.sample.util.FileUtil
 import com.github.dhaval2404.imagepicker.sample.util.IntentUtil
-import java.io.File
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_camera_only.*
 import kotlinx.android.synthetic.main.content_gallery_only.*
 import kotlinx.android.synthetic.main.content_profile.*
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         ImagePicker.with(this)
             // Crop Square image
             .cropSquare()
+            .restrictToMimeTypes(/*"image/jpeg"*/"image/png")
             // Image resolution will be less than 512 x 512
             .maxResultSize(512, 512)
             .start(PROFILE_IMAGE_REQ_CODE)
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
             .crop()
             // User can only select image from Gallery
             .galleryOnly()
+            .restrictToMimeTypes("image/jpeg", "image/png")
             // Image resolution will be less than 1080 x 1920
             .maxResultSize(1080, 1920)
             .start(GALLERY_IMAGE_REQ_CODE)
